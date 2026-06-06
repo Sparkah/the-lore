@@ -264,7 +264,7 @@ async function runBot(d){
   bot(leaderboardCard(mem), true); await wait(500);
   state.profiles = { groupAura:d.groupAura, members:mem };   // bot updates these on tap
   await wait(450);
-  bot(`<div class="bub">keep chatting — tap <b>update the lore</b> when you want me to re-read and refresh everyone's card</div>`);
+  bot(`<div class="bub">keep chatting - tap <b>update the lore</b> when you want me to re-read and refresh everyone's card</div>`);
 }
 
 // --- keep messaging; the lore re-reads + refreshes the WHOLE card only when YOU tap update ---
@@ -303,12 +303,12 @@ function localNudge(profiles, batch){   // offline fallback: swing aura, MOVE a 
   const sd=down?-(10+text.length%18):(10+text.length%18);
   const m=(profiles.members||[]).find(x=>/mrtim/i.test(x.name))||(profiles.members||[])[0];
   if(!m) return {members:profiles.members,groupAura:profiles.groupAura,changes:[]};
-  const note=beg?`nice try gaming me — that's an ick. ${delta} aura`
+  const note=beg?`nice try gaming me - that's an ick. ${delta} aura`
     :cringe?`forced "rise and grind" energy, the people have spoken. ${delta} aura`
     :`that actually landed. +${delta} aura, momentum building`;
   const roast=beg?`tried to bribe the bot for aura. bold. wrong, but bold.`
     :cringe?`brought "rise and grind" energy to a group chat. nobody asked, everybody clocked it.`
-    :`said something that actually landed for once. logged it — don't get used to it.`;
+    :`said something that actually landed for once. logged it - don't get used to it.`;
   return { groupAura:Math.max(0,(profiles.groupAura||0)+Math.round(delta/3)),
     members:(profiles.members||[]).map(x=>{
       if(x!==m) return x;
