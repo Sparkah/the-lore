@@ -1,8 +1,8 @@
 # Member - Tim Markin
 - name: Tim Markin
+- handle: @Sparkah
 - role: team leader / lead builder
 - persona: taste-driven-fast-shipper
-- email: (optional - add here if you want; not collected by anyone else)
-- team: [FILL - registered team name]
+- team: content pipe
 - project: the lore
 - github: https://github.com/Sparkah/the-lore
