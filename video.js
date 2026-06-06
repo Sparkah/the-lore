@@ -41,7 +41,7 @@ async function setSub(p, text){
   for (let i=0;i<SEG.length;i++){
     const f = `${T}/s${i}.aiff`;
     execFileSync('say', ['-v', VOICE, '-r', '178', '-o', f, SEG[i].t]);
-    durs.push(parseFloat(execSync(`ffprobe -v error -show_entries format=duration -of csv=p=0 "${f}"`).toString().trim()) + 0.55);
+    durs.push(parseFloat(execSync(`ffprobe -v error -show_entries format=duration -of csv=p=0 "${f}"`).toString().trim()) + 0.12);
   }
   fs.writeFileSync(`${T}/list.txt`, SEG.map((_,i)=>`file '${T}/s${i}.aiff'`).join('\n'));
   execSync(`ffmpeg -y -f concat -safe 0 -i "${T}/list.txt" -c copy "${T}/voice.aiff" 2>/dev/null`);

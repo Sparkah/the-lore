@@ -99,6 +99,7 @@
   #gameLayer.on{display:flex}
   #gameLayer iframe{flex:1;width:100%;border:0;display:block}
   .gclose{position:absolute;top:12px;right:12px;z-index:2;width:38px;height:38px;border-radius:50%;background:rgba(0,0,0,.55);color:#fff;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:800;cursor:pointer}
+  .gopen{position:absolute;top:15px;right:58px;z-index:2;background:rgba(0,0,0,.55);color:#fff;font-weight:800;font-size:12px;padding:9px 13px;border-radius:18px;cursor:pointer}
   .inputbar .plus{cursor:pointer}
 </style>
 </head>
@@ -118,7 +119,7 @@
     <input id="msgin" class="fld" placeholder="Message" autocomplete="off" />
     <div class="ic">☺</div><div class="ic" id="sendbtn">➤</div>
   </div>
-  <div id="gameLayer"><div class="gclose" id="gclose">✕</div><iframe id="gameFrame" title="game"></iframe></div>
+  <div id="gameLayer"><div class="gopen" id="gopen">play full ↗</div><div class="gclose" id="gclose">✕</div><iframe id="gameFrame" title="game" allow="autoplay; fullscreen; gyroscope; accelerometer" allowfullscreen></iframe></div>
 </div>
 
 <script>
@@ -367,17 +368,19 @@ function applyUpdate(upd){
 }
 // --- games: the ultra-bot drops factory mini-games into the chat (ZYMIX mini-app style) ---
 const GAMES = [
-  { slug:'backrooms',    title:'Backrooms' },
-  { slug:'beast_bazaar', title:'Beast Bazaar' },
-  { slug:'merge_diner',  title:'Merge Diner' }
+  { slug:'boba_rush',    title:'Boba Rush' },
+  { slug:'merge_diner',  title:'Merge Diner' },
+  { slug:'beast_bazaar', title:'Beast Bazaar' }
 ];
 const GBASE = 'https://game-factory.tech';
 function gamesShelf(){
   return `<div class="games">${GAMES.map(g=>`<div class="gtile" data-url="${GBASE}/games/${g.slug}/"><img src="${GBASE}/thumbs/${g.slug}.png" alt="${esc(g.title)}" loading="lazy"><div class="gt">${esc(g.title)}</div></div>`).join('')}</div>`;
 }
-function openGame(url){ document.getElementById('gameFrame').src = url; document.getElementById('gameLayer').classList.add('on'); }
+let _gameURL = '';
+function openGame(url){ _gameURL = url; document.getElementById('gameFrame').src = url; document.getElementById('gameLayer').classList.add('on'); }
 function closeGame(){ document.getElementById('gameLayer').classList.remove('on'); document.getElementById('gameFrame').src = 'about:blank'; }
 document.getElementById('gclose').onclick = closeGame;
+document.getElementById('gopen').onclick = ()=>{ if(_gameURL) window.open(_gameURL, '_blank'); };
 msgs.addEventListener('click', e=>{ const t = e.target.closest('.gtile'); if(t && t.dataset.url) openGame(t.dataset.url); });
 document.querySelector('.inputbar .plus').onclick = ()=>{
   bot(`<div class="bub">🎮 pick a game to drop in:</div>`);
