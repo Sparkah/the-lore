@@ -91,6 +91,15 @@
   .lbdn{color:#c0392b;font-size:11px}
   .lorecard.bump{animation:bump .6s ease}
   @keyframes bump{0%{box-shadow:0 0 0 0 rgba(11,186,74,.55)}100%{box-shadow:0 0 0 16px rgba(11,186,74,0)}}
+  .games{display:flex;gap:8px;margin-top:4px}
+  .gtile{flex:1;cursor:pointer;text-align:center;min-width:0}
+  .gtile img{width:100%;aspect-ratio:1/1;object-fit:cover;border-radius:14px;border:1px solid #e7efe8;box-shadow:0 6px 16px -10px rgba(20,50,30,.5);background:#eef0f1}
+  .gtile .gt{font-size:11px;font-weight:800;color:#15201a;margin-top:5px;line-height:1.2;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  #gameLayer{position:absolute;inset:0;background:#000;z-index:50;display:none;flex-direction:column}
+  #gameLayer.on{display:flex}
+  #gameLayer iframe{flex:1;width:100%;border:0;display:block}
+  .gclose{position:absolute;top:12px;right:12px;z-index:2;width:38px;height:38px;border-radius:50%;background:rgba(0,0,0,.55);color:#fff;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:800;cursor:pointer}
+  .inputbar .plus{cursor:pointer}
 </style>
 </head>
 <body>
@@ -109,6 +118,7 @@
     <input id="msgin" class="fld" placeholder="Message" autocomplete="off" />
     <div class="ic">☺</div><div class="ic" id="sendbtn">➤</div>
   </div>
+  <div id="gameLayer"><div class="gclose" id="gclose">✕</div><iframe id="gameFrame" title="game"></iframe></div>
 </div>
 
 <script>
@@ -265,6 +275,9 @@ async function runBot(d){
   state.profiles = { groupAura:d.groupAura, members:mem };   // bot updates these on tap
   await wait(450);
   bot(`<div class="bub">keep chatting - tap <b>update the lore</b> when you want me to re-read and refresh everyone's card</div>`);
+  await wait(500);
+  bot(`<div class="bub">🎮 oh, and I can drop games into the chat too. pick one to play 👇</div>`);
+  bot(`<div class="bub" style="background:transparent;padding:0;max-width:100%">${gamesShelf()}</div>`, true);
 }
 
 // --- keep messaging; the lore re-reads + refreshes the WHOLE card only when YOU tap update ---
@@ -353,6 +366,24 @@ function applyUpdate(upd){
   bot(leaderboardCard(state.profiles.members), true);   // re-post so the ranking visibly reorders
   scroll();
 }
+// --- games: the ultra-bot drops factory mini-games into the chat (ZYMIX mini-app style) ---
+const GAMES = [
+  { slug:'merge_conquest', title:'Merge Conquest' },
+  { slug:'backrooms',      title:'Backrooms' },
+  { slug:'beast_bazaar',   title:'Beast Bazaar' }
+];
+const GBASE = 'https://game-factory.tech';
+function gamesShelf(){
+  return `<div class="games">${GAMES.map(g=>`<div class="gtile" data-url="${GBASE}/play.html?slug=${g.slug}"><img src="${GBASE}/thumbs/${g.slug}.png" alt="${esc(g.title)}" loading="lazy"><div class="gt">${esc(g.title)}</div></div>`).join('')}</div>`;
+}
+function openGame(url){ document.getElementById('gameFrame').src = url; document.getElementById('gameLayer').classList.add('on'); }
+function closeGame(){ document.getElementById('gameLayer').classList.remove('on'); document.getElementById('gameFrame').src = 'about:blank'; }
+document.getElementById('gclose').onclick = closeGame;
+msgs.addEventListener('click', e=>{ const t = e.target.closest('.gtile'); if(t && t.dataset.url) openGame(t.dataset.url); });
+document.querySelector('.inputbar .plus').onclick = ()=>{
+  bot(`<div class="bub">🎮 pick a game to drop in:</div>`);
+  bot(`<div class="bub" style="background:transparent;padding:0;max-width:100%">${gamesShelf()}</div>`, true);
+};
 </script>
 </body>
 </html>
