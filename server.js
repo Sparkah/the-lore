@@ -7,6 +7,13 @@ const http = require('http');
 const { spawn } = require('child_process');
 const fs = require('fs');
 const path = require('path');
+const os = require('os');
+
+function lanIP(){
+  const ifs = os.networkInterfaces();
+  for(const n of Object.keys(ifs)){ for(const i of (ifs[n]||[])){ if(i.family==='IPv4' && !i.internal) return i.address; } }
+  return 'localhost';
+}
 
 const PORT = process.env.PORT || 8787;
 const CLAUDE = process.env.CLAUDE_BIN || '/Users/timmarkin/.local/bin/claude';
@@ -99,6 +106,13 @@ http.createServer((req,res)=>{
         res.writeHead(503,{'content-type':'application/json'}); res.end(JSON.stringify({error:String(e.message||e)}));
       }
     });
+    return;
+  }
+  if((req.url||'').startsWith('/present')){
+    const url = `http://${lanIP()}:${PORT}/chat`;
+    const qr = `https://api.qrserver.com/v1/create-qr-code/?size=340x340&margin=14&data=${encodeURIComponent(url)}`;
+    res.writeHead(200,{'content-type':'text/html'});
+    res.end(`<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>the lore - scan to play</title><link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;800;900&display=swap" rel="stylesheet"><style>*{margin:0;box-sizing:border-box}body{font-family:Montserrat,-apple-system,sans-serif;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;background:linear-gradient(180deg,#d6f3df,#f3f7f3);color:#13201a;text-align:center;padding:24px}.b{font-size:54px;font-weight:900;letter-spacing:-2px;background:linear-gradient(135deg,#0bba4a,#08663b);-webkit-background-clip:text;background-clip:text;color:transparent}.t{font-size:18px;color:#3c4a42;max-width:440px;font-weight:600;line-height:1.4}.qr{background:#fff;padding:18px;border-radius:24px;box-shadow:0 20px 50px -24px rgba(20,50,30,.5)}.qr img{display:block;width:300px;height:300px}.u{font-size:14px;font-weight:800;color:#08663b}.s{font-size:13px;color:#8a948c}</style></head><body><div class="b">the lore</div><div class="t">add the bot to your group chat. AI reads the room and scores everyone. your gc is the game.</div><div class="qr"><img src="${qr}" alt="scan to play"></div><div class="u">scan to play, or open ${url}</div><div class="s">VibeHack London 2026 · table 58</div></body></html>`);
     return;
   }
   const file = (req.url||'/').startsWith('/chat') ? 'chat.html' : 'index.html';
