@@ -75,7 +75,7 @@ cards that pull new users in from other platforms.
 
 ### Try it out links
 - Demo: `[FILL — deployed URL or 2-3 min video]`  (see note below — localhost + local Claude won't work for remote judges)
-- Code: `[FILL — public GitHub/repo link]`
+- Code: https://github.com/Sparkah/the-lore
 
 ---
 
@@ -97,7 +97,7 @@ cards that pull new users in from other platforms.
 > AI is the entire product, not a feature. The lore bot sends the group chat to an LLM (Claude via the Claude CLI; Z.ai's GLM for the in-product analysis) with a structured prompt that returns a JSON "reading" — an archetype, an aura score, stats and a roast per person. A second endpoint feeds the existing profiles plus new messages back to the model, which decides — with consistent values — whether each aura should rise (wit, charisma, carrying the chat) or fall (cringe, ghosting, or trying to manipulate the bot, which it calls out). The judgment, the personalities and the evolving status are all model reasoning. We built it with Claude Code.
 
 **Demo / Deployed Product Link:** `[FILL]`
-**GitHub / Code Repository:** `[FILL]`
+**GitHub / Code Repository:** https://github.com/Sparkah/the-lore
 
 **Fotor published post link(s) + explanation:** `[FILL if applying]`
 > The visuals are the lore's launch campaign — a poster and a short promo of the cards dropping into a group chat — showing how the product looks and feels in the wild and how it is built to be screenshotted and shared.
