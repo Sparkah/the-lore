@@ -71,6 +71,18 @@
   .inputbar .plus{width:30px;height:30px;border-radius:50%;background:#f0f1f2;display:flex;align-items:center;justify-content:center;font-size:20px;color:#5a635c;flex:0 0 auto}
   .inputbar .fld{flex:1;background:#f3f4f5;border-radius:20px;padding:10px 14px;color:#9aa39c;font-size:14px}
   .inputbar .ic{font-size:17px;color:#9aa39c;flex:0 0 auto}
+  .inputbar input.fld{border:0;outline:0;min-width:0;color:#1d2b22;background:#f3f4f5;font-family:inherit}
+  .inputbar input.fld::placeholder{color:#9aa39c}
+  #sendbtn{cursor:pointer;color:#0bba4a;font-weight:900;font-size:18px}
+  .delta{display:inline-block;margin-left:8px;font-size:13px;font-weight:900;padding:2px 8px;border-radius:9px;vertical-align:middle}
+  .delta.up{color:#0a7a3e;background:#d8f3e0}
+  .delta.down{color:#c0392b;background:#fde2dd}
+  .trend{display:flex;align-items:center;gap:8px;margin:8px 0 2px}
+  .trend .spark{width:110px;height:24px;flex:0 0 auto}
+  .trend .tl{font-size:10px;font-weight:800;color:#9aa39c;text-transform:uppercase;letter-spacing:1px}
+  .updnote{margin-top:6px;font-size:12.5px;font-weight:600;color:#5d6b62;font-style:italic;padding:0 4px}
+  .lorecard.bump{animation:bump .6s ease}
+  @keyframes bump{0%{box-shadow:0 0 0 0 rgba(11,186,74,.55)}100%{box-shadow:0 0 0 16px rgba(11,186,74,0)}}
 </style>
 </head>
 <body>
@@ -86,8 +98,8 @@
   <div class="cta" id="cta"><button id="addbot">✨ Add the lore bot to the group</button></div>
   <div class="inputbar">
     <div class="plus">+</div>
-    <div class="fld">Message</div>
-    <div class="ic">☺</div><div class="ic">⃞</div><div class="ic">🎤</div>
+    <input id="msgin" class="fld" placeholder="Message" autocomplete="off" />
+    <div class="ic">☺</div><div class="ic" id="sendbtn">➤</div>
   </div>
 </div>
 
@@ -121,6 +133,8 @@ const msgs = document.getElementById('msgs');
 const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const wait = ms => new Promise(r=>setTimeout(r,ms));
 const scroll = ()=> msgs.scrollTop = msgs.scrollHeight;
+const slug = s => String(s).toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'');
+const state = { profiles:null, pending:[], timer:null, updating:false };
 
 function hashStr(s){let h=0;s=String(s);for(let i=0;i<s.length;i++){h=(h*31+s.charCodeAt(i))>>>0;}return h;}
 function avatarSVG(m,i){
@@ -147,18 +161,31 @@ function bot(html, full){ const w=rowEl('in', full?'full':''); w.innerHTML = avH
   `<div class="col"><div class="nm">the lore</div>${html}</div>`; scroll(); return w; }
 function voiceNote(){ let b=''; [6,11,16,9,14,7,13,5].forEach(h=> b+=`<i style="height:${h}px"></i>`); return `<div class="vn"><span class="play">▶</span><span class="bars">${b}</span><span>1"</span></div>`; }
 
-function loreCard(m,i){
+function sparkline(hist){
+  const w=110,h=24; if(!hist||hist.length<2) return '';
+  const max=Math.max(...hist),min=Math.min(...hist),rng=(max-min)||1;
+  const pts=hist.map((v,i)=>`${((i/(hist.length-1))*w).toFixed(1)},${(h-3-((v-min)/rng)*(h-8)).toFixed(1)}`).join(' ');
+  const up=hist[hist.length-1]>=hist[0];
+  return `<svg class="spark" viewBox="0 0 ${w} ${h}" preserveAspectRatio="none"><polyline points="${pts}" fill="none" stroke="${up?'#0bba4a':'#c0392b'}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+}
+function cardBody(m,i){
   const g=m.colors||["#0bba4a","#08663b"];
+  const hist=m._hist||[m.aura||0];
+  const prev=hist.length>1?hist[hist.length-2]:null;
+  const delta=prev!=null?((m.aura||0)-prev):null;
   const stats=(m.stats||[]).map(s=>`<div class="st"><div class="stl"><span>${esc(s[0])}</span><span>${s[1]}</span></div><div class="bar"><i data-w="${Math.max(0,Math.min(100,s[1]))}"></i></div></div>`).join('');
-  return `<div class="bub" style="background:transparent;padding:0;max-width:100%"><div class="lorecard">
-    <div class="strip" style="background:linear-gradient(90deg,${g[0]},${g[1]})"></div>
+  return `<div class="strip" style="background:linear-gradient(90deg,${g[0]},${g[1]})"></div>
     <div class="med">${avatarSVG(m,i)}</div>
     <div class="cn">${esc(m.name)}</div>
     <div class="ca">${esc(m.arch||'')}</div>
-    <div class="cau">${(m.aura||0).toLocaleString()} <small>AURA</small></div>
+    <div class="cau">${(m.aura||0).toLocaleString()} <small>AURA</small>${delta!=null?` <span class="delta ${delta>=0?'up':'down'}">${delta>=0?'+':''}${delta}</span>`:''}</div>
+    ${hist.length>1?`<div class="trend">${sparkline(hist)}<span class="tl">${hist.length} reads</span></div>`:''}
     ${stats}
-    <div class="cr">${esc(m.roast||'')}</div>
-  </div></div>`;
+    <div class="cr">${esc(m.roast||'')}</div>`;
+}
+function animateBars(el){ if(!el) return; el.querySelectorAll('.bar i').forEach(b=> requestAnimationFrame(()=>{ b.style.width=(b.dataset.w||0)+'%'; })); }
+function loreCard(m,i){
+  return `<div class="bub" style="background:transparent;padding:0;max-width:100%"><div class="lorecard" id="lc-${slug(m.name)}" data-i="${i}">${cardBody(m,i)}</div></div>`;
 }
 function awardCard(aw){
   return `<div class="bub" style="background:transparent;padding:0;max-width:100%"><div class="lorecard awardcard">
@@ -208,13 +235,96 @@ async function runBot(d){
   bot(`<div class="bub">ok i read all your messages 👀 even the 1-second voice note. here's the lore on this group 👇</div>`); await wait(750);
   bot(`<div class="bub"><b>${esc(d.groupName||'the group')}</b><br>${esc(d.groupVibe||'')}<br><span style="color:#08663b;font-weight:800">🔮 group aura ${(d.groupAura||0).toLocaleString()}</span></div>`); await wait(750);
   const mem=d.members||[];
+  mem.forEach(m=> m._hist=[m.aura||0]);   // begin aura history
   for(let i=0;i<mem.length;i++){
     const w=bot(loreCard(mem[i],i), true);
-    w.querySelectorAll('.bar i').forEach(b=> setTimeout(()=> b.style.width=b.dataset.w+'%', 120));
+    animateBars(w);
     await wait(800);
   }
   if(d.awards&&d.awards.length){ bot(awardCard(d.awards), true); await wait(500); }
   bot(`<div class="bub">screenshot your card and drop it back in the gc 📸</div>`);
+  // the bot now UPDATES these same profiles when YOU tap update (not on every message)
+  state.profiles = { groupAura:d.groupAura, members:mem };
+  await wait(450);
+  bot(`<div class="bub">i'm staying in the chat 👁️ keep talking — then tap <b>update the lore</b> whenever you want me to re-read and refresh everyone's card</div>`);
+}
+
+// --- keep messaging; the lore re-reads + refreshes the WHOLE card only when YOU tap update ---
+const input = document.getElementById('msgin');
+const sendbtn = document.getElementById('sendbtn');
+const cta = document.getElementById('cta');
+function nowHM(){ const d=new Date(); return ('0'+d.getHours()).slice(-2)+':'+('0'+d.getMinutes()).slice(-2); }
+function sendMsg(){
+  const v=(input.value||'').trim(); if(!v) return; input.value='';
+  out({inner:esc(v), time:nowHM()});
+  if(state.profiles){ state.pending.push('MrTim: '+v); refreshCTA(); }   // queue only, no auto-update
+}
+input.addEventListener('keydown', e=>{ if(e.key==='Enter'){ e.preventDefault(); sendMsg(); }});
+sendbtn.addEventListener('click', sendMsg);
+
+function refreshCTA(){
+  if(state.profiles && state.pending.length && !state.updating){
+    cta.style.display='flex';
+    cta.innerHTML=`<button id="updbtn">🔄 update the lore (${state.pending.length} new ${state.pending.length===1?'message':'messages'})</button>`;
+    document.getElementById('updbtn').onclick=runUpdate;
+  } else { cta.style.display='none'; }
+}
+function stripHist(m){ const {_hist, ...rest}=m; return rest; }
+
+async function fetchUpdate(profiles, messages){
+  const r=await fetch('/api/update',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({profiles,messages})});
+  if(!r.ok) throw new Error('api'); return r.json();
+}
+function localNudge(profiles, batch){   // offline fallback: swing up or down from the message vibe
+  const text=batch.join(' ').toLowerCase();
+  const cringe=/(grind|rise and|kings|let'?s go|let'?s crush|🚀|🔥|hustle|crush it|gm )/.test(text);
+  const beg=/(aura|the lore|drop my|give me|raise my|best ai|worst ai)/.test(text);
+  const down=cringe||beg;
+  const mag=120+(text.length%90);
+  const delta=down?-mag:mag;
+  const m=(profiles.members||[]).find(x=>/mrtim/i.test(x.name))||(profiles.members||[])[0];
+  if(!m) return {members:profiles.members,groupAura:profiles.groupAura,changes:[]};
+  const note=beg?`nice try gaming me — that's an ick. ${delta} aura`
+    :cringe?`forced "rise and grind" energy, the people have spoken. ${delta} aura`
+    :`that actually landed. +${delta} aura, momentum building`;
+  return { groupAura:Math.max(0,(profiles.groupAura||0)+Math.round(delta/3)),
+    members:(profiles.members||[]).map(x=> x===m?{...x,aura:Math.max(0,(x.aura||0)+delta)}:x),
+    changes:[{name:m.name,auraDelta:delta,note}] };
+}
+async function runUpdate(){
+  if(state.updating || !state.pending.length) return; state.updating=true;
+  cta.style.display='none';
+  const batch=state.pending.splice(0);
+  const t=rowEl('in','typing'); t.innerHTML=avHTML('✨',true)+`<div class="bub"><span class="d"></span><span class="d"></span><span class="d"></span></div>`; scroll();
+  let upd=null;
+  try{ upd=await Promise.race([ fetchUpdate({groupAura:state.profiles.groupAura,members:state.profiles.members.map(stripHist)}, batch.join('\n')), new Promise((_,rej)=>setTimeout(()=>rej('to'),14000)) ]); }catch(e){}
+  t.remove();
+  if(!upd || !upd.members) upd=localNudge(state.profiles, batch);
+  applyUpdate(upd);
+  state.updating=false;
+  refreshCTA();
+}
+function applyUpdate(upd){
+  // merge updated fields into existing members, EXTENDING each one's aura history
+  (upd.members||[]).forEach(um=>{
+    const ex=(state.profiles.members||[]).find(x=>x.name===um.name);
+    if(ex){ ex._hist=(ex._hist||[ex.aura||0]).concat(um.aura||0);
+      ex.aura=um.aura; ex.arch=um.arch||ex.arch; ex.stats=um.stats||ex.stats;
+      ex.roast=um.roast||ex.roast; ex.emoji=um.emoji||ex.emoji; ex.colors=um.colors||ex.colors; }
+  });
+  if(typeof upd.groupAura==='number') state.profiles.groupAura=upd.groupAura;
+  const changes=(upd.changes&&upd.changes.length)?upd.changes:[];
+  if(!changes.length){ bot(`<div class="bub">re-read the chat 👀 no real movement this round.</div>`); return; }
+  bot(`<div class="bub">re-read the chat 👀 updated scorecards 👇</div>`);
+  // the REPLY itself is the refreshed scorecard (with the running aura trend + delta)
+  changes.forEach(ch=>{
+    const idx=(state.profiles.members||[]).findIndex(x=>x.name===ch.name);
+    const m=state.profiles.members[idx]; if(!m) return;
+    const w=bot(`<div class="bub" style="background:transparent;padding:0;max-width:100%"><div class="lorecard upd">${cardBody(m,idx)}</div>${ch.note?`<div class="updnote">${(ch.auraDelta||0)>=0?'📈':'📉'} ${esc(ch.note)}</div>`:''}</div>`, true);
+    animateBars(w);
+    const lc=w.querySelector('.lorecard'); if(lc){ lc.classList.remove('bump'); void lc.offsetWidth; lc.classList.add('bump'); }
+  });
+  scroll();
 }
 </script>
 </body>
