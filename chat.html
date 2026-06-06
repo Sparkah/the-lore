@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+<title>Vibe Hack · the lore</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;margin:0;padding:0}
+  body{font-family:'Montserrat',-apple-system,BlinkMacSystemFont,sans-serif;background:#cfe8d6;display:flex;justify-content:center}
+  .phone{width:100%;max-width:412px;min-height:100vh;background:#fff;display:flex;flex-direction:column;position:relative}
+  .statusbar{display:flex;justify-content:space-between;align-items:center;padding:9px 20px 3px;font-size:13px;font-weight:800;color:#111}
+  .statusbar .r{font-size:12px;letter-spacing:1px}
+  .chathead{display:flex;align-items:center;gap:10px;padding:6px 14px 12px;border-bottom:1px solid #eef0f1}
+  .circ{width:36px;height:36px;border-radius:50%;background:#f3f4f5;display:flex;align-items:center;justify-content:center;font-size:17px;color:#3a423b;flex:0 0 auto}
+  .gav{width:38px;height:38px;border-radius:12px;background:linear-gradient(135deg,#0bba4a,#08663b);flex:0 0 auto}
+  .gtitle{flex:1;line-height:1.18}
+  .gtitle b{font-size:16px;color:#15201a}
+  .gtitle span{display:block;font-size:12px;color:#8a948c;font-weight:600}
+  .msgs{flex:1;overflow-y:auto;padding:12px 14px 6px;display:flex;flex-direction:column;gap:7px}
+  .sys{align-self:center;color:#9aa39c;font-size:12px;margin:7px 0;font-weight:600;text-align:center}
+  .row{display:flex;gap:8px;align-items:flex-end;max-width:86%}
+  .row.in{align-self:flex-start}
+  .row.out{align-self:flex-end;flex-direction:row-reverse}
+  .row.full{max-width:96%;width:96%}
+  .av{width:30px;height:30px;border-radius:9px;flex:0 0 auto;background:#e2e6e3;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;color:#7c867e}
+  .av.bot{background:linear-gradient(135deg,#0bba4a,#08663b);color:#fff;font-size:15px}
+  .col{display:flex;flex-direction:column;gap:2px;min-width:0}
+  .nm{font-size:12px;font-weight:800;color:#3a463f;margin-left:5px}
+  .bub{padding:9px 13px;border-radius:17px;font-size:14.5px;line-height:1.4;color:#1d2b22;word-wrap:break-word;overflow-wrap:anywhere}
+  .in .bub{background:#eef0f1;border-bottom-left-radius:6px}
+  .out .bub{background:#c9efa3;border-bottom-right-radius:6px;color:#1c2a14}
+  .tm{font-size:10.5px;color:#9aa39c;margin-top:3px}
+  .out .tm{text-align:right}
+  .tick{color:#39a35a;font-weight:900}
+  .sticker{font-size:46px;line-height:1}
+  .vn{display:flex;align-items:center;gap:9px;font-weight:800;color:#46524a}
+  .vn .play{font-size:13px}
+  .vn .bars{display:flex;gap:2px;align-items:center;height:18px}
+  .vn .bars i{width:2.5px;background:#aab2ac;border-radius:2px}
+  .typing .bub{display:flex;gap:5px;align-items:center;padding:12px 14px}
+  .typing .d{width:7px;height:7px;border-radius:50%;background:#aeb7b0;animation:bl 1.2s infinite}
+  .typing .d:nth-child(2){animation-delay:.2s}
+  .typing .d:nth-child(3){animation-delay:.4s}
+  @keyframes bl{0%,60%,100%{opacity:.3}30%{opacity:1}}
+  .pop{opacity:0;transform:translateY(10px);animation:pp .35s ease forwards}
+  @keyframes pp{to{opacity:1;transform:none}}
+  /* bot lore card, posted in chat */
+  .lorecard{background:#fff;border:1px solid #e7efe8;border-radius:18px;padding:14px;box-shadow:0 10px 24px -18px rgba(20,50,30,.55);width:100%;overflow:hidden}
+  .lorecard .strip{height:6px;margin:-14px -14px 11px}
+  .lorecard .med{display:flex;justify-content:center;margin-bottom:4px}
+  .lorecard .med svg{width:66px;height:66px;filter:drop-shadow(0 6px 12px rgba(20,50,30,.25))}
+  .lorecard .cn{text-align:center;font-weight:900;font-size:18px;color:#15201a}
+  .lorecard .ca{text-align:center;font-size:10.5px;font-weight:800;letter-spacing:1px;text-transform:uppercase;color:#08663b;margin-top:2px;line-height:1.3}
+  .lorecard .cau{text-align:center;font-weight:900;color:#08663b;font-size:21px;margin:9px 0 3px}
+  .lorecard .cau small{font-size:10.5px;color:#9aa39c;letter-spacing:1.5px;font-weight:800}
+  .lorecard .st{margin-top:7px}
+  .lorecard .stl{display:flex;justify-content:space-between;font-size:11px;font-weight:700;color:#3c4a42}
+  .lorecard .bar{height:7px;background:#eaf0ea;border-radius:9px;overflow:hidden;margin-top:3px}
+  .lorecard .bar i{display:block;height:100%;background:#0bba4a;border-radius:9px;width:0;transition:width .8s cubic-bezier(.2,.8,.2,1)}
+  .lorecard .cr{margin-top:11px;background:#f1f6f2;border-radius:12px;padding:9px 11px;font-size:13px;color:#27332c;font-weight:600;line-height:1.42}
+  .awardcard .aw{display:flex;gap:10px;align-items:center;padding:8px 0;border-bottom:1px solid #eef3ee;font-size:13px}
+  .awardcard .aw:last-child{border-bottom:0}
+  .awardcard .aw .t{flex:1;color:#4c594f;font-weight:600}
+  .awardcard .aw .w{font-weight:900;color:#08663b}
+  .cta{padding:8px 14px 4px;display:flex}
+  .cta button{flex:1;background:linear-gradient(135deg,#0bba4a,#08663b);color:#fff;border:0;border-radius:16px;padding:14px;font-family:inherit;font-weight:800;font-size:15px;cursor:pointer;box-shadow:0 8px 20px -8px rgba(11,141,50,.55)}
+  .cta button:active{transform:scale(.98)}
+  .inputbar{display:flex;align-items:center;gap:10px;padding:8px 14px 16px}
+  .inputbar .plus{width:30px;height:30px;border-radius:50%;background:#f0f1f2;display:flex;align-items:center;justify-content:center;font-size:20px;color:#5a635c;flex:0 0 auto}
+  .inputbar .fld{flex:1;background:#f3f4f5;border-radius:20px;padding:10px 14px;color:#9aa39c;font-size:14px}
+  .inputbar .ic{font-size:17px;color:#9aa39c;flex:0 0 auto}
+</style>
+</head>
+<body>
+<div class="phone">
+  <div class="statusbar"><span>17:47</span><span class="r">5G ▮▮▮ 82%</span></div>
+  <div class="chathead">
+    <div class="circ">‹</div>
+    <div class="gav"></div>
+    <div class="gtitle"><b>Vibe Hack</b><span id="members">3 Members</span></div>
+    <div class="circ">⋯</div>
+  </div>
+  <div class="msgs" id="msgs"></div>
+  <div class="cta" id="cta"><button id="addbot">✨ Add the lore bot to the group</button></div>
+  <div class="inputbar">
+    <div class="plus">+</div>
+    <div class="fld">Message</div>
+    <div class="ic">☺</div><div class="ic">⃞</div><div class="ic">🎤</div>
+  </div>
+</div>
+
+<script>
+// baked reading of THIS chat (generated on Claude) so the bot flow is instant + reliable offline
+const BAKED = {
+  "groupName":"hackathon squad (definitely unnamed)",
+  "groupAura":61,
+  "groupVibe":"three people arriving at a party simultaneously and none of them know what to do with their hands.",
+  "members":[
+    {"name":"MrTim","emoji":"🎭","arch":"the dramatic greeter","aura":74,"colors":["#FF6B6B","#FFA63D"],
+     "stats":[["sticker dependency",95],["response speed",88],["chill factor",31]],
+     "roast":"you opened with 'Helloooo' and a sticker in a chat that had zero messages. you are the notification sound personified."},
+    {"name":"dimknaf","emoji":"🎙️","arch":"the accidental voice noter","aura":69,"colors":["#34D399","#0E7C49"],
+     "stats":[["voice note utility",2],["hackathon curiosity",82],["accidental sends",99]],
+     "roast":"a ONE second voice note, then the word 'hi' typed out anyway. what was in there. who hurt you. why did you send it."},
+    {"name":"zymix_br3cnv","emoji":"👻","arch":"the specter","aura":50,"colors":["#5B6CFF","#8E44AD"],
+     "stats":[["words spoken",1],["mystery aura",98],["actually present",19]],
+     "roast":"your username looks like a captcha and your entire personality in this chat is four letters. respect, honestly."}
+  ],
+  "awards":[
+    {"medal":"🏆","title":"Most dramatic cold open","winner":"MrTim"},
+    {"medal":"🎙️","title":"Least informative voice note in history","winner":"dimknaf"},
+    {"medal":"🔐","title":"Username looks like a password reset token","winner":"zymix_br3cnv"},
+    {"medal":"🤝","title":"Three 'hi's, zero information","winner":"the group"}
+  ]
+};
+const CHAT_TEXT = `MrTim: Helloooo\nMrTim: [sticker]\ndimknaf: [1 second voice note]\ndimknaf: hi\ndimknaf: how are u finding the hackathon?\nzymix_br3cnv: hi`;
+
+const msgs = document.getElementById('msgs');
+const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const wait = ms => new Promise(r=>setTimeout(r,ms));
+const scroll = ()=> msgs.scrollTop = msgs.scrollHeight;
+
+function hashStr(s){let h=0;s=String(s);for(let i=0;i<s.length;i++){h=(h*31+s.charCodeAt(i))>>>0;}return h;}
+function avatarSVG(m,i){
+  const g=m.colors||["#0bba4a","#08663b"];
+  const h=hashStr(m.name||('x'+i)), rings=3+(h%3), rot=h%360, id='lg'+i+'_'+(h%9999);
+  let r='';
+  for(let k=1;k<=rings;k++){const rad=52-k*7, dash=4+((h>>k)%9);
+    r+=`<circle cx="64" cy="64" r="${rad}" fill="none" stroke="rgba(255,255,255,${(0.10+0.05*k).toFixed(2)})" stroke-width="1.5" stroke-dasharray="${dash} ${dash+3}" transform="rotate(${rot+k*28} 64 64)"/>`;}
+  let dots='';
+  for(let d=0;d<6;d++){const ang=((h*(d+3))%360)*Math.PI/180, x=64+57*Math.cos(ang), y=64+57*Math.sin(ang);
+    dots+=`<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${(1.3+(d%2)).toFixed(1)}" fill="rgba(255,255,255,.85)"/>`;}
+  return `<svg viewBox="0 0 128 128" xmlns="http://www.w3.org/2000/svg"><defs><radialGradient id="${id}" cx="38%" cy="30%" r="78%"><stop offset="0%" stop-color="${g[0]}"/><stop offset="100%" stop-color="${g[1]}"/></radialGradient></defs><circle cx="64" cy="64" r="60" fill="url(#${id})"/>${r}${dots}<text x="64" y="64" font-size="50" text-anchor="middle" dominant-baseline="central">${m.emoji||'✨'}</text></svg>`;
+}
+
+function rowEl(side, cls){ const w=document.createElement('div'); w.className='row '+side+(cls?' '+cls:'')+' pop'; msgs.appendChild(w); return w; }
+function avHTML(text, bot){ return `<div class="av${bot?' bot':''}">${text||''}</div>`; }
+
+function out(opts){ const w=rowEl('out'); w.innerHTML = avHTML('T') +
+  (opts.sticker ? `<div class="sticker">${opts.sticker}</div>`
+    : `<div class="col"><div class="bub">${opts.inner}</div><div class="tm">${opts.time} <span class="tick">✓✓</span></div></div>`); scroll(); }
+function inn(opts){ const w=rowEl('in'); w.innerHTML = avHTML(opts.av||'•') +
+  `<div class="col">${opts.name?`<div class="nm">${esc(opts.name)}</div>`:''}<div class="bub">${opts.inner}</div><div class="tm">${opts.time||''}</div></div>`; scroll(); }
+function bot(html, full){ const w=rowEl('in', full?'full':''); w.innerHTML = avHTML('✨', true) +
+  `<div class="col"><div class="nm">the lore</div>${html}</div>`; scroll(); return w; }
+function voiceNote(){ let b=''; [6,11,16,9,14,7,13,5].forEach(h=> b+=`<i style="height:${h}px"></i>`); return `<div class="vn"><span class="play">▶</span><span class="bars">${b}</span><span>1"</span></div>`; }
+
+function loreCard(m,i){
+  const g=m.colors||["#0bba4a","#08663b"];
+  const stats=(m.stats||[]).map(s=>`<div class="st"><div class="stl"><span>${esc(s[0])}</span><span>${s[1]}</span></div><div class="bar"><i data-w="${Math.max(0,Math.min(100,s[1]))}"></i></div></div>`).join('');
+  return `<div class="bub" style="background:transparent;padding:0;max-width:100%"><div class="lorecard">
+    <div class="strip" style="background:linear-gradient(90deg,${g[0]},${g[1]})"></div>
+    <div class="med">${avatarSVG(m,i)}</div>
+    <div class="cn">${esc(m.name)}</div>
+    <div class="ca">${esc(m.arch||'')}</div>
+    <div class="cau">${(m.aura||0).toLocaleString()} <small>AURA</small></div>
+    ${stats}
+    <div class="cr">${esc(m.roast||'')}</div>
+  </div></div>`;
+}
+function awardCard(aw){
+  return `<div class="bub" style="background:transparent;padding:0;max-width:100%"><div class="lorecard awardcard">
+    <div class="strip" style="background:linear-gradient(90deg,#F5A623,#E67E22)"></div>
+    <div class="cn">🏆 group awards</div>
+    <div style="margin-top:10px">${aw.map(a=>`<div class="aw"><span>${a.medal||'🏅'}</span><span class="t">${esc(a.title)}</span><span class="w">${esc(a.winner)}</span></div>`).join('')}</div>
+  </div></div>`;
+}
+
+// seed the real Vibe Hack conversation
+function seed(){
+  msgs.innerHTML='';
+  const s1=document.createElement('div'); s1.className='sys'; s1.textContent='Today 5:45 pm'; msgs.appendChild(s1);
+  const s2=document.createElement('div'); s2.className='sys'; s2.textContent='MrTim created the group'; msgs.appendChild(s2);
+  out({inner:'Helloooo', time:'17:45'});
+  out({sticker:'🥓', time:'17:46'});
+  inn({name:'dimknaf', av:'d', inner:voiceNote(), time:'17:45'});
+  inn({av:'d', inner:'hi', time:'17:45'});
+  inn({av:'d', inner:'how are u finding the hackathon?', time:'17:46'});
+  inn({name:'zymix_br3cnv', av:'z', inner:'hi', time:'17:46'});
+  scroll();
+}
+seed();
+
+async function fetchLive(){
+  const r = await fetch('/api/generate',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({chat:CHAT_TEXT})});
+  if(!r.ok) throw new Error('api'); return r.json();
+}
+
+document.getElementById('addbot').onclick = async ()=>{
+  const cta=document.getElementById('cta'); cta.style.display='none';
+  const sys=document.createElement('div'); sys.className='sys pop'; sys.textContent='the lore was added to the group'; msgs.appendChild(sys);
+  document.getElementById('members').textContent='4 Members'; scroll();
+  await wait(500);
+  // typing indicator
+  const t=rowEl('in','typing'); t.innerHTML = avHTML('✨',true)+`<div class="bub"><span class="d"></span><span class="d"></span><span class="d"></span></div>`; scroll();
+  // try live (Claude sub) but never block the demo; fall back to baked
+  const t0=Date.now(); let data=null;
+  try{ data = await Promise.race([ fetchLive(), new Promise((_,rej)=>setTimeout(()=>rej('to'),9000)) ]); }catch(e){}
+  if(!data) data=BAKED;
+  const el=Date.now()-t0; if(el<1800) await wait(1800-el);
+  t.remove();
+  await runBot(data);
+};
+
+async function runBot(d){
+  bot(`<div class="bub">ok i read all your messages 👀 even the 1-second voice note. here's the lore on this group 👇</div>`); await wait(750);
+  bot(`<div class="bub"><b>${esc(d.groupName||'the group')}</b><br>${esc(d.groupVibe||'')}<br><span style="color:#08663b;font-weight:800">🔮 group aura ${(d.groupAura||0).toLocaleString()}</span></div>`); await wait(750);
+  const mem=d.members||[];
+  for(let i=0;i<mem.length;i++){
+    const w=bot(loreCard(mem[i],i), true);
+    w.querySelectorAll('.bar i').forEach(b=> setTimeout(()=> b.style.width=b.dataset.w+'%', 120));
+    await wait(800);
+  }
+  if(d.awards&&d.awards.length){ bot(awardCard(d.awards), true); await wait(500); }
+  bot(`<div class="bub">screenshot your card and drop it back in the gc 📸</div>`);
+}
+</script>
+</body>
+</html>
