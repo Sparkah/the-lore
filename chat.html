@@ -81,6 +81,14 @@
   .trend .spark{width:110px;height:24px;flex:0 0 auto}
   .trend .tl{font-size:10px;font-weight:800;color:#9aa39c;text-transform:uppercase;letter-spacing:1px}
   .updnote{margin-top:6px;font-size:12.5px;font-weight:600;color:#5d6b62;font-style:italic;padding:0 4px}
+  .lb{margin-top:10px}
+  .lbrow{display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid #eef3ee;font-size:14px}
+  .lbrow:last-child{border-bottom:0}
+  .lbr{width:30px;text-align:center;font-weight:900;color:#08663b;flex:0 0 auto}
+  .lbn{flex:1;font-weight:700;color:#15201a;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .lba{font-weight:900;color:#08663b;flex:0 0 auto}
+  .lbup{color:#0a7a3e;font-size:11px}
+  .lbdn{color:#c0392b;font-size:11px}
   .lorecard.bump{animation:bump .6s ease}
   @keyframes bump{0%{box-shadow:0 0 0 0 rgba(11,186,74,.55)}100%{box-shadow:0 0 0 16px rgba(11,186,74,0)}}
 </style>
@@ -194,6 +202,17 @@ function awardCard(aw){
     <div style="margin-top:10px">${aw.map(a=>`<div class="aw"><span>${a.medal||'🏅'}</span><span class="t">${esc(a.title)}</span><span class="w">${esc(a.winner)}</span></div>`).join('')}</div>
   </div></div>`;
 }
+function leaderboardCard(members){
+  const sorted=[...(members||[])].sort((a,b)=>(b.aura||0)-(a.aura||0));
+  const rows=sorted.map((m,i)=>{
+    const hist=m._hist||[m.aura||0];
+    const d=hist.length>1?((m.aura||0)-hist[hist.length-2]):0;
+    const rank=['🥇','🥈','🥉'][i]||('#'+(i+1));
+    const arr=d>0?'<span class="lbup">▲</span>':d<0?'<span class="lbdn">▼</span>':'';
+    return `<div class="lbrow"><span class="lbr">${rank}</span><span class="lbn">${esc(m.name)}</span>${arr}<span class="lba">${(m.aura||0).toLocaleString()}</span></div>`;
+  }).join('');
+  return `<div class="bub" style="background:transparent;padding:0;max-width:100%"><div class="lorecard"><div class="strip" style="background:linear-gradient(90deg,#0bba4a,#08663b)"></div><div class="cn">🏆 aura leaderboard</div><div class="lb">${rows}</div></div></div>`;
+}
 
 // seed the real Vibe Hack conversation
 function seed(){
@@ -242,6 +261,7 @@ async function runBot(d){
     await wait(800);
   }
   if(d.awards&&d.awards.length){ bot(awardCard(d.awards), true); await wait(500); }
+  bot(leaderboardCard(mem), true); await wait(500);
   bot(`<div class="bub">screenshot your card and drop it back in the gc 📸</div>`);
   // the bot now UPDATES these same profiles when YOU tap update (not on every message)
   state.profiles = { groupAura:d.groupAura, members:mem };
@@ -324,6 +344,7 @@ function applyUpdate(upd){
     animateBars(w);
     const lc=w.querySelector('.lorecard'); if(lc){ lc.classList.remove('bump'); void lc.offsetWidth; lc.classList.add('bump'); }
   });
+  bot(leaderboardCard(state.profiles.members), true);   // re-post so the ranking visibly reorders
   scroll();
 }
 </script>
