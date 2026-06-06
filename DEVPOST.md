@@ -44,8 +44,8 @@ the group gets a live leaderboard. Your group chat is now the game.
   pitched as a ZYMIX mini-app that lives inside the messaging experience.
 - A tiny zero-dependency Node server with two endpoints: `/api/generate` (first
   reading) and `/api/update` (evolve the existing profiles, never from scratch).
-- The analysis runs on a large language model — Claude, and Z.ai's GLM — that
-  returns structured JSON we render as cards.
+- The analysis runs on Z.ai's GLM-4.6, which returns structured JSON we render as
+  cards. (We built the app itself with Claude Code; GLM powers it at runtime.)
 - Character medallions are generated as procedural SVG; aura history is a live
   sparkline that grows every time the bot re-reads.
 
@@ -74,7 +74,7 @@ cards that pull new users in from other platforms.
 > Z.ai GLM-4.6 (the in-product LLM), vanilla JavaScript, HTML5, CSS3, SVG, Node.js (zero-dependency server) + Cloudflare Workers (deploy), Montserrat (Google Fonts), Claude Code (build agent), GitHub. [add Fotor / Manus when those assets are published]
 
 ### Try it out links
-- Demo: `[FILL — deployed URL or 2-3 min video]`  (see note below — localhost + local Claude won't work for remote judges)
+- Demo: https://the-lore.timofeymarkin98.workers.dev/chat
 - Code: https://github.com/Sparkah/the-lore
 
 ---
@@ -94,9 +94,9 @@ cards that pull new users in from other platforms.
 > Group chats go quiet and social apps struggle to keep people coming back. The lore turns the chat itself into a live status game — a reason to keep talking, to pull friends in, and to open the app again. It is an engagement engine for a Gen Z social app, disguised as something genuinely fun to play.
 
 **How did you use AI?**
-> AI is the entire product, not a feature. The lore bot sends the group chat to an LLM (Claude via the Claude CLI; Z.ai's GLM for the in-product analysis) with a structured prompt that returns a JSON "reading" — an archetype, an aura score, stats and a roast per person. A second endpoint feeds the existing profiles plus new messages back to the model, which decides — with consistent values — whether each aura should rise (wit, charisma, carrying the chat) or fall (cringe, ghosting, or trying to manipulate the bot, which it calls out). The judgment, the personalities and the evolving status are all model reasoning. We built it with Claude Code.
+> AI is the entire product, not a feature. The lore bot sends the group chat to Z.ai's GLM-4.6 with a structured prompt that returns a JSON "reading" — an archetype, an aura score, stats and a roast per person. A second endpoint feeds the existing profiles plus the new messages back to GLM, which decides — with consistent values — whether each aura should rise (wit, charisma, carrying the chat) or fall (cringe, ghosting, or trying to manipulate the bot, which it calls out). The judgment, the personalities and the evolving status are all model reasoning. We built the app with Claude Code; GLM-4.6 powers it at runtime.
 
-**Demo / Deployed Product Link:** `[FILL]`
+**Demo / Deployed Product Link:** https://the-lore.timofeymarkin98.workers.dev/chat
 **GitHub / Code Repository:** https://github.com/Sparkah/the-lore
 
 **Fotor published post link(s) + explanation:** `[FILL if applying]`
@@ -113,7 +113,7 @@ cards that pull new users in from other platforms.
 - [x] Public code repo: https://github.com/Sparkah/the-lore
 - [x] LLM = Z.ai GLM-4.6 (Product Integration award); local server + Cloudflare Worker both call it.
 - [x] Orbit persona package generated at `orbit/team-the-lore/` (fill team_name/members/devpost, then zip the folder + upload to orbit24.uk/vibehack).
-- [ ] Demo link: `wrangler login` then `wrangler deploy`, then `grep '^GLM_API_KEY=' .env | cut -d= -f2- | wrangler secret put GLM_API_KEY` -> paste the *.workers.dev URL. Backup: record a 2-3 min video of the local demo.
+- [x] Demo link LIVE: https://the-lore.timofeymarkin98.workers.dev/chat (Cloudflare Worker, GLM-powered, verified).
 - [ ] Fotor: produce + publish per `FOTOR.md`, paste the link.
 - [ ] Manus: run + publish per `MANUS.md`, paste the link.
 - [ ] Devpost form: project name, team name + members, team ID 58, track = Build with Zymix, the answers above, demo link, repo link, special-award links; tick T&Cs.
