@@ -261,8 +261,7 @@ document.getElementById('addbot').onclick = async ()=>{
 };
 
 async function runBot(d){
-  bot(`<div class="bub">ok i read all your messages 👀 even the 1-second voice note. here's the lore on this group 👇</div>`); await wait(750);
-  bot(`<div class="bub"><b>${esc(d.groupName||'the group')}</b><br>${esc(d.groupVibe||'')}<br><span style="color:#08663b;font-weight:800">🔮 group aura ${(d.groupAura||0).toLocaleString()}</span></div>`); await wait(750);
+  bot(`<div class="bub">read the room 👀 here's the lore on <b>${esc(d.groupName||'the group')}</b> · <span style="color:#08663b;font-weight:800">${(d.groupAura||0).toLocaleString()} aura</span> 👇</div>`); await wait(750);
   const mem=d.members||[];
   mem.forEach(m=> m._hist=[m.aura||0]);   // begin aura history
   for(let i=0;i<mem.length;i++){
@@ -368,13 +367,13 @@ function applyUpdate(upd){
 }
 // --- games: the ultra-bot drops factory mini-games into the chat (ZYMIX mini-app style) ---
 const GAMES = [
-  { slug:'merge_conquest', title:'Merge Conquest' },
-  { slug:'backrooms',      title:'Backrooms' },
-  { slug:'beast_bazaar',   title:'Beast Bazaar' }
+  { slug:'backrooms',    title:'Backrooms' },
+  { slug:'beast_bazaar', title:'Beast Bazaar' },
+  { slug:'merge_diner',  title:'Merge Diner' }
 ];
 const GBASE = 'https://game-factory.tech';
 function gamesShelf(){
-  return `<div class="games">${GAMES.map(g=>`<div class="gtile" data-url="${GBASE}/play.html?slug=${g.slug}"><img src="${GBASE}/thumbs/${g.slug}.png" alt="${esc(g.title)}" loading="lazy"><div class="gt">${esc(g.title)}</div></div>`).join('')}</div>`;
+  return `<div class="games">${GAMES.map(g=>`<div class="gtile" data-url="${GBASE}/games/${g.slug}/"><img src="${GBASE}/thumbs/${g.slug}.png" alt="${esc(g.title)}" loading="lazy"><div class="gt">${esc(g.title)}</div></div>`).join('')}</div>`;
 }
 function openGame(url){ document.getElementById('gameFrame').src = url; document.getElementById('gameLayer').classList.add('on'); }
 function closeGame(){ document.getElementById('gameLayer').classList.remove('on'); document.getElementById('gameFrame').src = 'about:blank'; }
