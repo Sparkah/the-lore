@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
+<title>the lore</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#f3f7f3; --card:#ffffff; --ink:#13201a; --muted:#5d6b62;
+    --green:#0bba4a; --green-d:#08663b;
+    --grad:linear-gradient(135deg,#0bba4a,#08663b);
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  html,body{margin:0;color:var(--ink);
+    background:linear-gradient(180deg,#d6f3df 0%,#edf6ef 30%,#f3f7f3 100%);background-attachment:fixed;
+    font-family:'Montserrat',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+    -webkit-font-smoothing:antialiased}
+  .wrap{max-width:440px;margin:0 auto;padding:22px 18px 90px;min-height:100vh}
+  .hero{padding:40px 4px 8px}
+  .brand{font-size:46px;font-weight:900;letter-spacing:-2px;line-height:.95;
+    background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+  .dot{color:var(--green);-webkit-text-fill-color:var(--green)}
+  .tag{margin:14px 2px 0;color:var(--muted);font-size:16px;font-weight:500;line-height:1.4}
+  textarea{width:100%;height:148px;margin-top:22px;background:#fff;border:1px solid #d4e3d8;
+    border-radius:18px;color:var(--ink);padding:16px;font-size:14px;resize:none;font-family:inherit;line-height:1.45}
+  textarea::placeholder{color:#9bab9f}
+  .row{display:flex;gap:10px;margin-top:12px}
+  button{font-family:inherit;font-weight:800;font-size:16px;border:0;border-radius:16px;
+    padding:16px;cursor:pointer;flex:1;transition:transform .08s ease}
+  button:active{transform:scale(.97)}
+  .primary{background:var(--grad);color:#fff;box-shadow:0 10px 26px -8px rgba(11,141,50,.5)}
+  .ghost{background:#fff;color:var(--green-d);border:1px solid #cfe2d4;flex:0 0 auto;padding:16px 18px}
+  .hint{margin-top:14px;color:#8a988f;font-size:12.5px;text-align:center}
+  #out{margin-top:8px}
+  .vibe{background:#fff;border:1px solid #e6efe8;border-radius:22px;padding:20px;margin:8px 0 16px;box-shadow:0 10px 26px -20px rgba(20,50,30,.4)}
+  .vibe .lab{color:var(--green-d);font-size:12px;text-transform:uppercase;letter-spacing:1.5px;font-weight:800}
+  .vibe h2{margin:6px 0 4px;font-size:22px;font-weight:900;color:var(--ink)}
+  .vibe p{margin:8px 0 0;color:#4c594f;font-size:14.5px;line-height:1.5}
+  .ga{font-size:34px;font-weight:900;background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+  .card{background:#fff;border:1px solid #e7efe8;border-radius:24px;padding:22px;margin:14px 0;position:relative;overflow:hidden;
+    box-shadow:0 16px 34px -22px rgba(20,50,30,.5);opacity:0;transform:translateY(26px) scale(.98)}
+  .card.in{animation:pop .5s cubic-bezier(.2,.8,.2,1) forwards}
+  @keyframes pop{to{opacity:1;transform:none}}
+  .card .glow{position:absolute;top:0;left:0;right:0;height:8px;z-index:0}
+  .card>*{position:relative;z-index:1}
+  .share{position:absolute;top:18px;right:18px;z-index:3;background:#eaf6ee;border:1px solid #cfe7d6;border-radius:12px;padding:8px 10px;font-size:13px;font-weight:800;color:var(--green-d);cursor:pointer}
+  .medallion{display:flex;justify-content:center;margin:10px 0 8px}
+  .medallion svg{filter:drop-shadow(0 8px 16px rgba(20,50,30,.28))}
+  .name{font-size:25px;font-weight:900;margin-top:6px;color:var(--ink);text-align:center}
+  .arch{font-size:12px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;color:var(--green-d);margin-top:3px;text-align:center}
+  .aura{display:flex;align-items:baseline;gap:8px;margin:16px 0 4px;justify-content:center}
+  .aura .num{font-size:38px;font-weight:900;color:var(--green-d);letter-spacing:-1px}
+  .aura .u{font-size:13px;font-weight:800;color:#8a988f;text-transform:uppercase;letter-spacing:2px}
+  .stat{margin-top:10px}
+  .stat .sl{display:flex;justify-content:space-between;font-size:12px;font-weight:700;color:#3c4a42;margin-bottom:4px}
+  .bar{height:8px;background:#eaf0ea;border-radius:99px;overflow:hidden}
+  .bar i{display:block;height:100%;background:var(--green);border-radius:99px;width:0;transition:width .9s cubic-bezier(.2,.8,.2,1)}
+  .roast{margin-top:16px;font-size:15px;font-weight:600;color:#27332c;line-height:1.45;
+    background:#f1f6f2;padding:12px 14px;border-radius:14px}
+  .awards .a{display:flex;gap:12px;align-items:center;padding:11px 0;border-bottom:1px solid #eef3ee}
+  .awards .a:last-child{border-bottom:0}
+  .awards .at{font-size:13px;color:#4c594f;font-weight:600;flex:1}
+  .awards .aw{font-size:15px;font-weight:900;color:var(--green-d)}
+  .awards .medal{font-size:22px}
+  .reveal-again{margin-top:18px}
+  .load{text-align:center;color:var(--muted);padding:30px;font-weight:700}
+  .spin{display:inline-block;width:22px;height:22px;border:3px solid #d6e2d8;border-top-color:var(--green);border-radius:50%;animation:sp 1s linear infinite;vertical-align:-5px;margin-right:8px}
+  @keyframes sp{to{transform:rotate(360deg)}}
+  .hidden{display:none}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div id="hero" class="hero">
+    <div class="brand">the lore<span class="dot">.</span></div>
+    <div class="tag">every group chat has lore.<br/>paste yours. find out who you really are.</div>
+    <textarea id="chat" placeholder="paste your group chat here... (names + messages)"></textarea>
+    <div class="row">
+      <button class="primary" id="go">reveal the lore</button>
+      <button class="ghost" id="sample">try sample</button>
+    </div>
+    <div class="hint">nothing is stored. screenshot your card and drop it back in the gc.</div>
+  </div>
+  <div id="out"></div>
+</div>
+
+<script>
+const SAMPLE_CHAT = `Maya: ok so are we ACTUALLY doing saturday or is this another group chat fantasy
+Maya: jay i can literally see you've read it
+Zara: cant believe im saying this but i might bring HIM
+Priya: HIM him?? the one who left you on delivered for 3 days???
+Zara: he said he was going through it 🥺
+Leo: zara he's going through your entire hinge match list one by one
+Maya: anyway. saturday. yes or no. ONE word.
+Jay: maybe
+Maya: i will remove you from this chat jay
+Priya: im in but im financially in my flop era someone needs to spot me
+Leo: priya you said you were broke then bought a £14 matcha yesterday
+Priya: that was an EMOTIONAL purchase leo leave me alone
+Zara: ok update HE replied "we'll see" what does that mean
+Maya: it means no zara
+Leo: it means he's washing his hair that night
+Sam: leave him on read and let your aura recover
+Zara: sam. you've lurked for 6 days and THAT is your first message
+Leo: im coming saturday but 1 hour max
+Maya: leo you said that last time and we found you at 4am doing karaoke with strangers
+Leo: that was for the plot and you know it
+Priya: where are we even going
+Maya: i sent 3 options. in this chat. with a poll.
+Jay: i vote option 2
+Maya: JAY THERE WAS NO OPTION 2
+Zara: he left me on read again guys
+Priya: babe just block him
+Zara: i cant his story views are my only serotonin
+Leo: this is exactly why your aura is in the negatives
+Maya: ok i'm deciding for everyone. saturday 9pm. be there or be talked about
+Sam: i'll be there. 20 minutes late. emotionally later than that`;
+
+const SAMPLE = {
+  groupName:"theoretically going out saturday",
+  groupAura:5840,
+  groupVibe:"six people who genuinely love each other but communicate exclusively through threats, deflection, and a man who replied 'we'll see'.",
+  members:[
+    {name:"Maya", emoji:"📋", arch:"exhausted logistics manager", aura:8200,
+     colors:["#FF3B30","#FFD700"],
+     stats:[["organisation",96],["patience left",7],["threats / session",91]],
+     roast:"sent a poll, three venue options and a firm deadline, and is STILL fighting a man named Jay for the word 'yes'."},
+    {name:"Zara", emoji:"🥺", arch:"delulu romantic in active denial", aura:3100,
+     colors:["#FF6B9D","#C77DFF"],
+     stats:[["red flag recognition",3],["story-view serotonin",97],["blocking ability",0]],
+     roast:"'we'll see' is not a love language babe, it's a 'no' wearing a trench coat and a beanie."},
+    {name:"Leo", emoji:"🎤", arch:"chaos agent in a reasonable-person costume", aura:7600,
+     colors:["#00D4FF","#FF6B35"],
+     stats:[["leaving when planned",2],["4am strangers befriended",94],["for the plot",100]],
+     roast:"said '1 hour max' and was found doing karaoke with strangers at 4am. not an introvert, a villain origin story with great timing."},
+    {name:"Priya", emoji:"🍵", arch:"financially chaotic, emotionally transparent", aura:5500,
+     colors:["#7BC67E","#F5A623"],
+     stats:[["financial stability",11],["purchases justified",99],["matcha : rent ratio",84]],
+     roast:"in her flop era but the £14 matcha was non-negotiable. the economy is bad, her priorities are worse, and she KNOWS it."},
+    {name:"Jay", emoji:"👁️", arch:"professional read-receipt haunter", aura:2300,
+     colors:["#9B9BAF","#1A1A2E"],
+     stats:[["read-receipt accountability",1],["voting accuracy",0],["contribution quality",4]],
+     roast:"voted for option 2 in a poll that had no option 2, and thought 'maybe' was a full sentence. a legend in the wrong direction."},
+    {name:"Sam", emoji:"🌑", arch:"lurker prophet who only speaks in scripture", aura:9100,
+     colors:["#2D1B69","#00F5A0"],
+     stats:[["days between messages",99],["quality per message",97],["emotional punctuality",15]],
+     roast:"six days of silence and the one message she drops is more useful than maya's entire planning thread. this is not a compliment."}
+  ],
+  awards:[
+    {medal:"🏆", title:"Most likely to be talked about for not coming", winner:"Jay"},
+    {medal:"🥺", title:"Red Flag Sommelier of the Year", winner:"Zara"},
+    {medal:"🎤", title:"'1 hour max' speedrun, 4am finish", winner:"Leo"},
+    {medal:"💸", title:"Most justified unjustifiable purchase", winner:"Priya"},
+    {medal:"🔮", title:"Highest message-to-impact ratio in history", winner:"Sam"}
+  ]
+};
+
+const out = document.getElementById('out');
+const hero = document.getElementById('hero');
+const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+
+function hashStr(s){let h=0;s=String(s);for(let i=0;i<s.length;i++){h=(h*31+s.charCodeAt(i))>>>0;}return h;}
+function avatarSVG(m,i){
+  const g=m.colors||["#7c3aed","#db2777"];
+  const h=hashStr(m.name||('x'+i)), rings=3+(h%3), rot=h%360, id='lg'+i;
+  let r='';
+  for(let k=1;k<=rings;k++){const rad=52-k*7, dash=4+((h>>k)%9);
+    r+=`<circle cx="64" cy="64" r="${rad}" fill="none" stroke="rgba(255,255,255,${(0.10+0.05*k).toFixed(2)})" stroke-width="1.5" stroke-dasharray="${dash} ${dash+3}" transform="rotate(${rot+k*28} 64 64)"/>`;}
+  let dots='';
+  for(let d=0;d<6;d++){const ang=((h*(d+3))%360)*Math.PI/180, x=64+57*Math.cos(ang), y=64+57*Math.sin(ang);
+    dots+=`<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${(1.3+(d%2)).toFixed(1)}" fill="rgba(255,255,255,.85)"/>`;}
+  return `<svg width="124" height="124" viewBox="0 0 128 128" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="${esc(m.name)} avatar"><defs><radialGradient id="${id}" cx="38%" cy="30%" r="78%"><stop offset="0%" stop-color="${g[0]}"/><stop offset="100%" stop-color="${g[1]}"/></radialGradient></defs><circle cx="64" cy="64" r="60" fill="url(#${id})"/>${r}${dots}<text x="64" y="64" font-size="50" text-anchor="middle" dominant-baseline="central">${m.emoji||'✨'}</text></svg>`;
+}
+
+function render(data){
+  clearInterval(_loreTimer);
+  out.innerHTML = '';
+  const vibe = document.createElement('div');
+  vibe.className = 'vibe';
+  vibe.innerHTML = `<div class="lab">group reading</div>
+    <h2>${esc(data.groupName||'the group chat')}</h2>
+    <div class="ga">${(data.groupAura||0).toLocaleString()} <span style="font-size:14px">group aura</span></div>
+    <p>${esc(data.groupVibe||'')}</p>`;
+  out.appendChild(vibe);
+
+  (data.members||[]).forEach((m,i)=>{
+    const c = document.createElement('div');
+    c.className = 'card';
+    const g = m.colors || ["#7c3aed","#db2777"];
+    const stats = (m.stats||[]).map(s=>`
+      <div class="stat"><div class="sl"><span>${esc(s[0])}</span><span>${s[1]}</span></div>
+      <div class="bar"><i data-w="${Math.max(0,Math.min(100,s[1]))}"></i></div></div>`).join('');
+    c.innerHTML = `<div class="glow" style="background:linear-gradient(150deg,${g[0]},${g[1]})"></div>
+      <div class="share">share ↗</div>
+      <div class="medallion">${avatarSVG(m,i)}</div>
+      <div class="name">${esc(m.name)}</div>
+      <div class="arch">${esc(m.arch||'')}</div>
+      <div class="aura"><span class="num">${(m.aura||0).toLocaleString()}</span><span class="u">aura</span></div>
+      ${stats}
+      <div class="roast">${esc(m.roast||'')}</div>`;
+    out.appendChild(c);
+    setTimeout(()=>{ c.classList.add('in');
+      c.querySelectorAll('.bar i').forEach(b=> b.style.width = b.dataset.w+'%'); }, 120*i + 60);
+  });
+
+  if(data.awards && data.awards.length){
+    const a = document.createElement('div');
+    a.className = 'card awards';
+    a.innerHTML = `<div class="glow" style="background:linear-gradient(150deg,#f59e0b,#b45309)"></div>
+      <div class="name" style="margin-top:0">🏆 group awards</div>
+      <div style="margin-top:12px">${data.awards.map(aw=>`
+        <div class="a"><span class="medal">${aw.medal||'🏅'}</span>
+        <span class="at">${esc(aw.title)}</span><span class="aw">${esc(aw.winner)}</span></div>`).join('')}</div>`;
+    out.appendChild(a);
+    setTimeout(()=>a.classList.add('in'), 120*(data.members||[]).length + 120);
+  }
+
+  const again = document.createElement('button');
+  again.className = 'primary reveal-again';
+  again.style.width = '100%';
+  again.textContent = 'read another chat';
+  again.onclick = ()=>{ out.innerHTML=''; hero.classList.remove('hidden'); window.scrollTo({top:0,behavior:'smooth'}); };
+  out.appendChild(again);
+}
+
+let _loreTimer=null;
+const LOAD_MSGS=["reading the messages...","clocking everyone's behaviour...","calculating aura points...","assigning archetypes...","writing the roasts...","almost there..."];
+function loading(){
+  hero.classList.add('hidden');
+  out.innerHTML = `<div class="load"><span class="spin"></span><span id="loadmsg">reading the lore...</span></div>`;
+  let i=0; clearInterval(_loreTimer);
+  _loreTimer=setInterval(()=>{ const el=document.getElementById('loadmsg'); if(el) el.textContent=LOAD_MSGS[i++%LOAD_MSGS.length]; }, 2400);
+}
+
+function showError(e){
+  clearInterval(_loreTimer);
+  hero.classList.add('hidden');
+  const fileMode = location.protocol === 'file:';
+  out.innerHTML = `<div class="vibe">
+    <div class="lab">the ai didn't run</div>
+    <h2>couldn't read that chat</h2>
+    <p>${fileMode
+      ? "you opened the file directly. open <b style='color:#f59e0b'>http://localhost:8787</b> instead so it can reach your claude sub."
+      : "the server didn't answer ("+esc(String(e.message||e))+"). make sure <b>node server.js</b> is running, then try again."}</p></div>`;
+  const a=document.createElement('button'); a.className='primary'; a.style.width='100%'; a.textContent='try again'; a.onclick=reveal; out.appendChild(a);
+  const b=document.createElement('button'); b.className='primary ghost'; b.style.width='100%'; b.style.marginTop='10px'; b.textContent='show the sample instead'; b.onclick=()=>render(SAMPLE); out.appendChild(b);
+}
+
+async function reveal(){
+  const chat = document.getElementById('chat').value.trim();
+  if(!chat){ document.getElementById('chat').focus(); return; }
+  const isSample = chat === SAMPLE_CHAT.trim();
+  loading();
+  try{
+    if(location.protocol === 'file:') throw new Error('opened as file://');
+    const r = await fetch('/api/generate', {method:'POST',headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({chat})});
+    if(!r.ok) throw new Error('server '+r.status);
+    const data = await r.json();
+    render(data);
+  }catch(e){
+    if(isSample){ render(SAMPLE); return; }   // sample works offline
+    showError(e);                              // real chat: be honest, don't fake it
+  }
+}
+
+document.getElementById('go').onclick = reveal;
+document.getElementById('sample').onclick = ()=>{
+  document.getElementById('chat').value = SAMPLE_CHAT;
+  hero.classList.add('hidden');
+  render(SAMPLE);
+};
+</script>
+</body>
+</html>
