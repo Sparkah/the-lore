@@ -262,11 +262,9 @@ async function runBot(d){
   }
   if(d.awards&&d.awards.length){ bot(awardCard(d.awards), true); await wait(500); }
   bot(leaderboardCard(mem), true); await wait(500);
-  bot(`<div class="bub">screenshot your card and drop it back in the gc 📸</div>`);
-  // the bot now UPDATES these same profiles when YOU tap update (not on every message)
-  state.profiles = { groupAura:d.groupAura, members:mem };
+  state.profiles = { groupAura:d.groupAura, members:mem };   // bot updates these on tap
   await wait(450);
-  bot(`<div class="bub">i'm staying in the chat 👁️ keep talking — then tap <b>update the lore</b> whenever you want me to re-read and refresh everyone's card</div>`);
+  bot(`<div class="bub">keep chatting — tap <b>update the lore</b> when you want me to re-read and refresh everyone's card</div>`);
 }
 
 // --- keep messaging; the lore re-reads + refreshes the WHOLE card only when YOU tap update ---
