@@ -1,0 +1,12 @@
+{
+  "session": "vibehack-london-2026",
+  "project": "the lore",
+  "track": "build-with-zymix",
+  "build_agent": "claude-code",
+  "product_llm": "glm-4.6 (z.ai)",
+  "features_shipped": 6,
+  "reverts": 1,
+  "direction_pivots": 5,
+  "deploy_target": "cloudflare-worker",
+  "verified_live": true
+}

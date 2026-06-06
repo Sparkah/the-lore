@@ -71,7 +71,7 @@ cards that pull new users in from other platforms.
 ```
 
 ### Built with
-> HTML5, CSS3, vanilla JavaScript, SVG, Node.js (zero-dependency http server), Anthropic Claude (claude-sonnet-4-6 + haiku via the Claude CLI), Z.ai GLM, Montserrat (Google Fonts), Puppeteer (dev testing), Claude Code. [add Cursor / Fotor / Manus if used]
+> Z.ai GLM-4.6 (the in-product LLM), vanilla JavaScript, HTML5, CSS3, SVG, Node.js (zero-dependency server) + Cloudflare Workers (deploy), Montserrat (Google Fonts), Claude Code (build agent), GitHub. [add Fotor / Manus when those assets are published]
 
 ### Try it out links
 - Demo: `[FILL — deployed URL or 2-3 min video]`  (see note below — localhost + local Claude won't work for remote judges)
@@ -109,10 +109,11 @@ cards that pull new users in from other platforms.
 
 ---
 
-## Pre-submit checklist (what's still needed)
-- [ ] Deploy a public demo URL **or** record a 2-3 min video. NOTE: the live build runs on the local Claude CLI on the laptop — for a clickable remote link we must host the server with a Z.ai GLM key, otherwise submit a video (table-side judging uses the laptop, which is fine).
-- [ ] Make the code link accessible to judges (public repo or project link).
-- [ ] Z.ai × Orbit: run Orbie this session, "capture my persona", team leader uploads ONE team zip to orbit24.uk/vibehack.
-- [ ] Fotor: produce the asset, publish to Fotor community, paste link.
-- [ ] (Optional) Manus: run one task, publish, paste link.
-- [ ] Tick the Terms & Conditions box.
+## Pre-submit checklist
+- [x] Public code repo: https://github.com/Sparkah/the-lore
+- [x] LLM = Z.ai GLM-4.6 (Product Integration award); local server + Cloudflare Worker both call it.
+- [x] Orbit persona package generated at `orbit/team-the-lore/` (fill team_name/members/devpost, then zip the folder + upload to orbit24.uk/vibehack).
+- [ ] Demo link: `wrangler login` then `wrangler deploy`, then `grep '^GLM_API_KEY=' .env | cut -d= -f2- | wrangler secret put GLM_API_KEY` -> paste the *.workers.dev URL. Backup: record a 2-3 min video of the local demo.
+- [ ] Fotor: produce + publish per `FOTOR.md`, paste the link.
+- [ ] Manus: run + publish per `MANUS.md`, paste the link.
+- [ ] Devpost form: project name, team name + members, team ID 58, track = Build with Zymix, the answers above, demo link, repo link, special-award links; tick T&Cs.
