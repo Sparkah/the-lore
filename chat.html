@@ -293,20 +293,28 @@ async function fetchUpdate(profiles, messages){
   const r=await fetch('/api/update',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({profiles,messages})});
   if(!r.ok) throw new Error('api'); return r.json();
 }
-function localNudge(profiles, batch){   // offline fallback: swing up or down from the message vibe
+function localNudge(profiles, batch){   // offline fallback: swing aura, MOVE a stat, REWRITE the roast
   const text=batch.join(' ').toLowerCase();
   const cringe=/(grind|rise and|kings|let'?s go|let'?s crush|🚀|🔥|hustle|crush it|gm )/.test(text);
   const beg=/(aura|the lore|drop my|give me|raise my|best ai|worst ai)/.test(text);
   const down=cringe||beg;
   const mag=120+(text.length%90);
   const delta=down?-mag:mag;
+  const sd=down?-(10+text.length%18):(10+text.length%18);
   const m=(profiles.members||[]).find(x=>/mrtim/i.test(x.name))||(profiles.members||[])[0];
   if(!m) return {members:profiles.members,groupAura:profiles.groupAura,changes:[]};
   const note=beg?`nice try gaming me — that's an ick. ${delta} aura`
     :cringe?`forced "rise and grind" energy, the people have spoken. ${delta} aura`
     :`that actually landed. +${delta} aura, momentum building`;
+  const roast=beg?`tried to bribe the bot for aura. bold. wrong, but bold.`
+    :cringe?`brought "rise and grind" energy to a group chat. nobody asked, everybody clocked it.`
+    :`said something that actually landed for once. logged it — don't get used to it.`;
   return { groupAura:Math.max(0,(profiles.groupAura||0)+Math.round(delta/3)),
-    members:(profiles.members||[]).map(x=> x===m?{...x,aura:Math.max(0,(x.aura||0)+delta)}:x),
+    members:(profiles.members||[]).map(x=>{
+      if(x!==m) return x;
+      const stats=(x.stats||[]).map((s,i)=> i===0?[s[0], Math.max(0,Math.min(100,(s[1]||0)+sd))]:s);
+      return {...x, aura:Math.max(0,(x.aura||0)+delta), stats, roast};
+    }),
     changes:[{name:m.name,auraDelta:delta,note}] };
 }
 async function runUpdate(){
