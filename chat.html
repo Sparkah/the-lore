@@ -288,9 +288,19 @@ const input = document.getElementById('msgin');
 const sendbtn = document.getElementById('sendbtn');
 const cta = document.getElementById('cta');
 function nowHM(){ const d=new Date(); return ('0'+d.getHours()).slice(-2)+':'+('0'+d.getMinutes()).slice(-2); }
+function isGamesCmd(v){ const t=(v||'').toLowerCase().replace(/[^a-z ]/g,' ').trim();
+  return (/\bgames?\b/.test(t) && /\b(show|more|another|see|drop|play|gimme|give|want|wanna|lets|let|next|other|any)\b/.test(t))
+      || /^(play|games?|more games?|show games?|show more games?|another game|play a game)$/.test(t); }
+function showGames(rotate){
+  if(rotate) _gameOff=(_gameOff+3)%POOL.length;
+  bot(`<div class="bub">🎮 here you go, tap one to play 👇</div>`);
+  bot(`<div class="bub" style="background:transparent;padding:0;max-width:100%">${gamesShelf()}</div>`, true);
+  scroll();
+}
 function sendMsg(){
   const v=(input.value||'').trim(); if(!v) return; input.value='';
   out({inner:esc(v), time:nowHM()});
+  if(isGamesCmd(v)){ showGames(/\b(more|another|next|other)\b/i.test(v)); return; }   // games command: react, never feed the aura update
   if(state.profiles){ state.pending.push('MrTim: '+v); refreshCTA(); }   // queue only, no auto-update
 }
 input.addEventListener('keydown', e=>{ if(e.key==='Enter'){ e.preventDefault(); sendMsg(); }});
