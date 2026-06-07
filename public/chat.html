@@ -64,6 +64,9 @@
   .awardcard .aw:last-child{border-bottom:0}
   .awardcard .aw .t{flex:1;color:#4c594f;font-weight:600}
   .awardcard .aw .w{font-weight:900;color:#08663b}
+  .cawardwrap{text-align:center;margin-top:7px}
+  .caward{display:inline-block;background:#fff5e0;color:#b26a00;font-size:11px;font-weight:800;padding:4px 11px;border-radius:10px;border:1px solid #ffe0a3;line-height:1.3}
+  .moregames{text-align:center;margin-top:8px;font-size:12px;font-weight:800;color:#08663b;background:#eafaef;padding:9px;border-radius:12px;cursor:pointer}
   .cta{padding:8px 14px 4px;display:flex}
   .cta button{flex:1;background:linear-gradient(135deg,#0bba4a,#08663b);color:#fff;border:0;border-radius:16px;padding:14px;font-family:inherit;font-weight:800;font-size:15px;cursor:pointer;box-shadow:0 8px 20px -8px rgba(11,141,50,.55)}
   .cta button:active{transform:scale(.98)}
@@ -197,6 +200,7 @@ function cardBody(m,i){
     <div class="med">${avatarSVG(m,i)}</div>
     <div class="cn">${esc(m.name)}</div>
     <div class="ca">${esc(m.arch||'')}</div>
+    ${m._award?`<div class="cawardwrap"><span class="caward">${m._award.medal||'🏆'} ${esc(m._award.title)}</span></div>`:''}
     <div class="cau">${(m.aura||0).toLocaleString()} <small>AURA</small>${delta!=null?` <span class="delta ${delta>=0?'up':'down'}">${delta>=0?'+':''}${delta}</span>`:''}</div>
     ${hist.length>1?`<div class="trend">${sparkline(hist)}<span class="tl">${hist.length} reads</span></div>`:''}
     ${stats}
@@ -264,13 +268,12 @@ document.getElementById('addbot').onclick = async ()=>{
 async function runBot(d){
   bot(`<div class="bub">read the room 👀 here's the lore on <b>${esc(d.groupName||'the group')}</b> · <span style="color:#08663b;font-weight:800">${(d.groupAura||0).toLocaleString()} aura</span> 👇</div>`); await wait(750);
   const mem=d.members||[];
-  mem.forEach(m=> m._hist=[m.aura||0]);   // begin aura history
+  mem.forEach(m=>{ m._hist=[m.aura||0]; m._award=(d.awards||[]).find(a=> (a.winner||'').toLowerCase()===(m.name||'').toLowerCase()); });   // aura history + fold each person's award onto their card
   for(let i=0;i<mem.length;i++){
     const w=bot(loreCard(mem[i],i), true);
     animateBars(w);
     await wait(800);
   }
-  if(d.awards&&d.awards.length){ bot(awardCard(d.awards), true); await wait(500); }
   bot(leaderboardCard(mem), true); await wait(500);
   state.profiles = { groupAura:d.groupAura, members:mem };   // bot updates these on tap
   await wait(450);
@@ -367,21 +370,32 @@ function applyUpdate(upd){
   scroll();
 }
 // --- games: the ultra-bot drops factory mini-games into the chat (ZYMIX mini-app style) ---
-const GAMES = [
-  { slug:'boba_rush',    title:'Boba Rush' },
-  { slug:'merge_diner',  title:'Merge Diner' },
-  { slug:'beast_bazaar', title:'Beast Bazaar' }
+const POOL = [
+  { slug:'boba_rush',       title:'Boba Rush' },
+  { slug:'idle_noodle_bar', title:'Idle Noodle Bar' },
+  { slug:'merge_diner',     title:'Merge Diner' },
+  { slug:'beast_bazaar',    title:'Beast Bazaar' },
+  { slug:'updrift',         title:'Updrift' },
+  { slug:'orb_legion',      title:'Orb Legion' },
+  { slug:'relic_restore',   title:'Relic Restore' },
+  { slug:'date_the_look',   title:'Date the Look' },
+  { slug:'bolus',           title:'Bolus' }
 ];
 const GBASE = 'https://game-factory.tech';
+let _gameOff = 0;
 function gamesShelf(){
-  return `<div class="games">${GAMES.map(g=>`<div class="gtile" data-url="${GBASE}/games/${g.slug}/"><img src="${GBASE}/thumbs/${g.slug}.png" alt="${esc(g.title)}" loading="lazy"><div class="gt">${esc(g.title)}</div></div>`).join('')}</div>`;
+  const picks = [0,1,2].map(k=> POOL[(_gameOff+k) % POOL.length]);
+  return `<div class="games">${picks.map(g=>`<div class="gtile" data-url="${GBASE}/games/${g.slug}/"><img src="${GBASE}/thumbs/${g.slug}.png" alt="${esc(g.title)}" loading="lazy"><div class="gt">${esc(g.title)}</div></div>`).join('')}</div><div class="moregames">↻ show more games</div>`;
 }
 let _gameURL = '';
 function openGame(url){ _gameURL = url; document.getElementById('gameFrame').src = url; document.getElementById('gameLayer').classList.add('on'); }
 function closeGame(){ document.getElementById('gameLayer').classList.remove('on'); document.getElementById('gameFrame').src = 'about:blank'; }
 document.getElementById('gclose').onclick = closeGame;
 document.getElementById('gopen').onclick = ()=>{ if(_gameURL) window.open(_gameURL, '_blank'); };
-msgs.addEventListener('click', e=>{ const t = e.target.closest('.gtile'); if(t && t.dataset.url) openGame(t.dataset.url); });
+msgs.addEventListener('click', e=>{
+  const t = e.target.closest('.gtile'); if(t && t.dataset.url){ openGame(t.dataset.url); return; }
+  if(e.target.closest('.moregames')){ _gameOff = (_gameOff + 3) % POOL.length; bot(`<div class="bub">🎮 digging up more from the studio 👇</div>`); bot(`<div class="bub" style="background:transparent;padding:0;max-width:100%">${gamesShelf()}</div>`, true); scroll(); }
+});
 document.querySelector('.inputbar .plus').onclick = ()=>{
   bot(`<div class="bub">🎮 pick a game to drop in:</div>`);
   bot(`<div class="bub" style="background:transparent;padding:0;max-width:100%">${gamesShelf()}</div>`, true);
