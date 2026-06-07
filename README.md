@@ -2,6 +2,8 @@
 
 > Add an AI bot to your group chat. It reads the room, scores everyone, and drops playable mini-games right into the chat.
 
+[![the lore — watch the demo](screenshot.png)](https://www.youtube.com/watch?v=MQr92XR5AT0)
+
 VibeHack London 2026 · Team "content pipe" (table 58) · Main track: Build with Zymix
 
 Live demo: https://the-lore.timofeymarkin98.workers.dev/chat
